@@ -1,0 +1,94 @@
+<div>
+  <section>
+    <h1>AI-Powered WhatsApp Lessons</h1>
+    <p>Get personalized AI-generated lessons delivered to your WhatsApp. Choose your topic, frequency, and schedule.</p>
+  </section>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Phone Number Input -->
+    <mat-form-field appearance="outline">
+      <mat-label>Phone Number</mat-label>
+      <input
+        matInput
+        formControlName="phoneNumber"
+        placeholder="Enter your WhatsApp phone number"
+        type="tel"
+      />
+      <mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">
+        Phone number is required
+      </mat-error>
+      <mat-error *ngIf="form.get('phoneNumber')?.hasError('pattern')">
+        Please enter a valid phone number
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Topic Selection with Autocomplete -->
+    <mat-form-field appearance="outline">
+      <mat-label>Learning Topic</mat-label>
+      <input
+        matInput
+        formControlName="topic"
+        [matAutocomplete]="topicAuto"
+        placeholder="Choose or type a topic"
+      />
+      <mat-autocomplete #topicAuto="matAutocomplete">
+        <mat-option *ngFor="let topic of filteredTopics$ | async" [value]="topic">
+          {{ topic }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="form.get('topic')?.hasError('required')">
+        Topic is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Message Count Selection -->
+    <mat-form-field appearance="outline">
+      <mat-label>Number of Messages</mat-label>
+      <mat-select formControlName="messageCount">
+        <mat-option *ngFor="let count of messageCountOptions" [value]="count">
+          {{ count }} message{{ count > 1 ? 's' : '' }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('messageCount')?.hasError('required')">
+        Please select number of messages
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Delivery Schedule - Days Selection -->
+    <fieldset>
+      <legend>Select Days for Delivery</legend>
+      <div>
+        <mat-checkbox
+          *ngFor="let day of weekdays"
+          [checked]="isDaySelected(day.value)"
+          (change)="onDayChange(day.value, $event)"
+        >
+          {{ day.label }}
+        </mat-checkbox>
+      </div>
+      <mat-error *ngIf="form.get('selectedDays')?.hasError('required')">
+        Select at least one day
+      </mat-error>
+    </fieldset>
+
+    <!-- Delivery Time Selection -->
+    <mat-form-field appearance="outline">
+      <mat-label>Delivery Time (24-hour format)</mat-label>
+      <input
+        matInput
+        formControlName="deliveryTime"
+        [matTimepicker]="timePicker"
+        placeholder="HH:mm"
+      />
+      <mat-timepicker #timePicker></mat-timepicker>
+      <mat-error *ngIf="form.get('deliveryTime')?.hasError('required')">
+        Delivery time is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Submit Button -->
+    <button mat-raised-button type="submit" [disabled]="!form.valid">
+      Start Learning
+    </button>
+  </form>
+</div>
