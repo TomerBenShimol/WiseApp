@@ -12,6 +12,7 @@ import {
   min,
   pattern,
   required,
+  validate,
 } from '@angular/forms/signals';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
@@ -42,30 +43,45 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
     FormField,
   ],
   templateUrl: './landing-page.component.html',
-  styleUrls: [],
+  styleUrls: ['./landing-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageComponent {
-  filteredTopics = computed(() => {
-    const topic = this.configurationForm.topic().value();
-    return this._filterTopics(topic || '');
-  });
+  readonly WEEKDAYS = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ] as const;
 
   configurationModel = signal<ConfigurationData>({
     phoneNumber: '',
     topic: '',
     messageCount: 1,
-    selectedDays: [],
+    sunday: false,
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
     deliveryTime: '',
+  });
+
+  atLeastOneDaySelected = computed(() => {
+    const selected = this.WEEKDAYS.find((day) =>
+      this.configurationForm[day]().value(),
+    );
+    return !!selected;
   });
 
   configurationForm = form(this.configurationModel, (schemaPath) => {
     required(schemaPath.phoneNumber, { message: 'Phone number is required' });
     required(schemaPath.topic, { message: 'Topic is required' });
     required(schemaPath.messageCount, { message: 'Message count is required' });
-    required(schemaPath.selectedDays, {
-      message: 'At least one day is required',
-    });
     required(schemaPath.deliveryTime, { message: 'Delivery time is required' });
     debounce(schemaPath.phoneNumber, 500);
     min(schemaPath.messageCount, 1, { message: 'Minimum 1 message required' });
@@ -73,58 +89,19 @@ export class LandingPageComponent {
     pattern(schemaPath.phoneNumber, /^[0-9\s\-\+\(\)]*$/, {
       message: 'Invalid phone number',
     });
+    pattern(schemaPath.phoneNumber, /^(?!.*[<>{}[\]`]).*$/, {
+      message: 'Special characters not allowed',
+    });
+    this.WEEKDAYS.forEach((day) => {
+      validate(schemaPath[day], () => {
+        return this.atLeastOneDaySelected()
+          ? null
+          : { kind: 'daySelection', message: 'At least one day must be selected' };
+      });
+    });
   });
 
-  predefinedTopics = [
-    'Technology',
-    'Science',
-    'History',
-    'Languages',
-    'Business',
-  ];
-
   messageCountOptions = [1, 2, 3];
-
-  weekdays = [
-    { label: 'Sunday', value: 'sunday' },
-    { label: 'Monday', value: 'monday' },
-    { label: 'Tuesday', value: 'tuesday' },
-    { label: 'Wednesday', value: 'wednesday' },
-    { label: 'Thursday', value: 'thursday' },
-    { label: 'Friday', value: 'friday' },
-    { label: 'Saturday', value: 'saturday' },
-  ];
-
-  private _filterTopics(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.predefinedTopics.filter((topic) =>
-      topic.toLowerCase().includes(filterValue),
-    );
-  }
-
-  onDayChange(day: string, event: MatCheckboxChange) {
-    if (event.checked) {
-      this.configurationForm
-        .selectedDays()
-        .value.update((prevSelectedDays) => [...prevSelectedDays, day]);
-    } else {
-      const day: string | undefined = this.configurationForm
-        .selectedDays()
-        .value()
-        .find((d) => d === day);
-      if (day) {
-        this.configurationForm
-          .selectedDays()
-          .value.update((prevSelectedDays) =>
-            prevSelectedDays.filter((d) => d !== day),
-          );
-      }
-    }
-  }
-
-  isDaySelected(day: string): boolean {
-    return (this.configurationForm.selectedDays().value() || []).includes(day);
-  }
 
   onSubmit(event: Event) {
     event.preventDefault();
@@ -139,6 +116,12 @@ interface ConfigurationData {
   phoneNumber: string;
   topic: string;
   messageCount: number;
-  selectedDays: string[];
+  sunday: boolean;
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
   deliveryTime: string;
 }

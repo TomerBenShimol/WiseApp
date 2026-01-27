@@ -7,7 +7,7 @@
     </p>
   </section>
   <form (submit)="onSubmit($event)">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="form-field-container">
       <mat-label>Phone Number</mat-label>
       <input
         matInput
@@ -19,38 +19,37 @@
         configurationForm.phoneNumber().touched() &&
         !configurationForm.phoneNumber().valid()
       ) {
-        @for (error of configurationForm.phoneNumber().errors(); track error) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
+        <mat-error>
+          @for (
+            error of configurationForm.phoneNumber().errors();
+            track error
+          ) {
+            {{ error.message }}
+          }
+        </mat-error>
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="form-field-container">
       <mat-label>Learning Topic</mat-label>
       <input
         matInput
         [formField]="configurationForm.topic"
-        [matAutocomplete]="topicAuto"
         placeholder="Choose or type a topic"
       />
-      <mat-autocomplete #topicAuto="matAutocomplete">
-        @for (topic of filteredTopics(); track topic) {
-          <mat-option [value]="topic">
-            {{ topic }}
-          </mat-option>
-        }
-      </mat-autocomplete>
       @if (
         configurationForm.topic().touched() &&
         !configurationForm.topic().valid()
       ) {
-        @for (error of configurationForm.topic().errors(); track error) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
+        <mat-error>
+          @for (error of configurationForm.topic().errors(); track error) {
+            {{ error.message }}
+          }
+        </mat-error>
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="form-field-container">
       <mat-label>Number of Messages</mat-label>
       <mat-select [formField]="configurationForm.messageCount">
         @for (count of messageCountOptions; track count) {
@@ -63,36 +62,32 @@
         configurationForm.messageCount().touched() &&
         !configurationForm.messageCount().valid()
       ) {
-        @for (error of configurationForm.messageCount().errors(); track error) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
+        <mat-error>
+          @for (
+            error of configurationForm.messageCount().errors();
+            track error
+          ) {
+            {{ error.message }}
+          }
+        </mat-error>
       }
     </mat-form-field>
 
-    <fieldset>
+    <fieldset class="form-field-container">
       <legend>Select Days for Delivery</legend>
       <div>
-        @for (day of weekdays; track day) {
-          <mat-checkbox
-            [formField]="configurationForm.selectedDays"
-            [checked]="isDaySelected(day.value)"
-            (change)="onDayChange(day.value, $event)"
-          >
-            {{ day.label }}
+        @for (day of WEEKDAYS; track day) {
+          <mat-checkbox [formField]="configurationForm[day]" [id]="day">
+            {{ day }}
           </mat-checkbox>
         }
       </div>
-      @if (
-        configurationForm.selectedDays().touched() &&
-        !configurationForm.selectedDays().valid()
-      ) {
-        @for (error of configurationForm.selectedDays().errors(); track error) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
+      @if (configurationForm().touched() && !atLeastOneDaySelected()) {
+        <mat-error> At least one day must be selected. </mat-error>
       }
     </fieldset>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="form-field-container">
       <mat-label>Delivery Time (24-hour format)</mat-label>
       <input
         matInput
@@ -105,9 +100,14 @@
         configurationForm.deliveryTime().touched() &&
         !configurationForm.deliveryTime().valid()
       ) {
-        @for (error of configurationForm.deliveryTime().errors(); track error) {
-          <mat-error>{{ error.message }}</mat-error>
-        }
+        <mat-error>
+          @for (
+            error of configurationForm.deliveryTime().errors();
+            track error
+          ) {
+            {{ error.message }}
+          }
+        </mat-error>
       }
     </mat-form-field>
 
