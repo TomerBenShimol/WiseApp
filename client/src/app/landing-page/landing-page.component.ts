@@ -43,7 +43,6 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
     FormField,
   ],
   templateUrl: './landing-page.component.html',
-  styleUrls: ['./landing-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageComponent {
@@ -96,7 +95,10 @@ export class LandingPageComponent {
       validate(schemaPath[day], () => {
         return this.atLeastOneDaySelected()
           ? null
-          : { kind: 'daySelection', message: 'At least one day must be selected' };
+          : {
+              kind: 'daySelection',
+              message: 'At least one day must be selected',
+            };
       });
     });
   });
