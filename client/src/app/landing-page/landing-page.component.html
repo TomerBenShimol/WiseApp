@@ -13,97 +13,14 @@
 
     <form (submit)="onSubmit($event)"
       class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 space-y-6 border border-gray-100">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Phone Number</mat-label>
-          <input matInput [formField]="configurationForm.phoneNumber" placeholder="Enter your WhatsApp phone number"
-            type="tel" />
-          @if (
-          configurationForm.phoneNumber().touched() &&
-          !configurationForm.phoneNumber().valid()
-          ) {
-          <mat-error>
-            @for (
-            error of configurationForm.phoneNumber().errors();
-            track error
-            ) {
-            {{ error.message }}
-            }
-          </mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Learning Topic</mat-label>
-          <input matInput [formField]="configurationForm.topic" placeholder="Choose or type a topic" />
-          @if (
-          configurationForm.topic().touched() &&
-          !configurationForm.topic().valid()
-          ) {
-          <mat-error>
-            @for (error of configurationForm.topic().errors(); track error) {
-            {{ error.message }}
-            }
-          </mat-error>
-          }
-        </mat-form-field>
+      <div class="flex flex-col gap-6">
+        <app-learning-profile [phoneNumberField]="configurationForm.phoneNumber" [topicField]="configurationForm.topic"
+          [messageCountField]="configurationForm.messageCount" [messageCountOptions]="messageCountOptions" />
+
+        <app-delivery-schedule [weekdays]="WEEKDAYS" [dayFields]="dayFields()"
+          [deliveryTimeField]="configurationForm.deliveryTime" [formTouched]="configurationForm().touched()"
+          [atLeastOneDaySelected]="atLeastOneDaySelected()" />
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Number of Messages</mat-label>
-          <mat-select [formField]="configurationForm.messageCount">
-            @for (count of messageCountOptions; track count) {
-            <mat-option [value]="count">
-              {{ count }} message{{ count > 1 ? "s" : "" }}
-            </mat-option>
-            }
-          </mat-select>
-          @if (
-          configurationForm.messageCount().touched() &&
-          !configurationForm.messageCount().valid()
-          ) {
-          <mat-error>
-            @for (
-            error of configurationForm.messageCount().errors();
-            track error
-            ) {
-            {{ error.message }}
-            }
-          </mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Delivery Time (24-hour format)</mat-label>
-          <input matInput [formField]="configurationForm.deliveryTime" [matTimepicker]="timePicker"
-            placeholder="HH:mm" />
-          <mat-timepicker #timePicker></mat-timepicker>
-          @if (
-          configurationForm.deliveryTime().touched() &&
-          !configurationForm.deliveryTime().valid()
-          ) {
-          <mat-error>
-            @for (
-            error of configurationForm.deliveryTime().errors();
-            track error
-            ) {
-            {{ error.message }}
-            }
-          </mat-error>
-          }
-        </mat-form-field>
-      </div>
-      <fieldset class="border border-gray-200 rounded-xl p-4 sm:p-6 bg-gray-50/50">
-        <legend class="text-sm font-semibold text-gray-700 px-2">Select Days for Delivery</legend>
-        <div class="flex flex-wrap gap-2 sm:gap-4 mt-2">
-          @for (day of WEEKDAYS; track day) {
-          <mat-checkbox [formField]="configurationForm[day]" [id]="day" class="!min-w-[80px] sm:!min-w-[100px]">
-            {{ day | titlecase }}
-          </mat-checkbox>
-          }
-        </div>
-        @if (configurationForm().touched() && !atLeastOneDaySelected()) {
-        <mat-error class="mt-2 text-sm"> At least one day must be selected. </mat-error>
-        }
-      </fieldset>
       <div class="pt-4">
         <button mat-raised-button type="submit" [disabled]="!configurationForm().valid()"
           class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:shadow-lg">

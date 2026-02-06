@@ -7,7 +7,6 @@ import {
 import {
   debounce,
   form,
-  FormField,
   max,
   min,
   pattern,
@@ -15,32 +14,18 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { CommonModule } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {
-  MatCheckboxChange,
-  MatCheckboxModule,
-} from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatTimepickerModule } from '@angular/material/timepicker';
+import { LearningProfileComponent } from './components/learning-profile/learning-profile.component';
+import { DeliveryScheduleComponent } from './components/delivery-schedule/delivery-schedule.component';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
   imports: [
     CommonModule,
-    MatInputModule,
-    MatSelectModule,
-    MatAutocompleteModule,
-    MatCheckboxModule,
     MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatTimepickerModule,
-    FormField,
+    LearningProfileComponent,
+    DeliveryScheduleComponent,
   ],
   templateUrl: './landing-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,6 +60,14 @@ export class LandingPageComponent {
       this.configurationForm[day]().value(),
     );
     return !!selected;
+  });
+
+  dayFields = computed(() => {
+    const fields: Record<string, any> = {};
+    this.WEEKDAYS.forEach((day) => {
+      fields[day] = this.configurationForm[day];
+    });
+    return fields;
   });
 
   configurationForm = form(this.configurationModel, (schemaPath) => {
