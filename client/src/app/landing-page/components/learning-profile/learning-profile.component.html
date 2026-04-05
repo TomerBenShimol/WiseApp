@@ -43,7 +43,9 @@
                     </mat-option>
                     }
                 </mat-select>
-                @if (messageCountField()().touched() && !messageCountField()().valid()) {
+                @if (
+                messageCountField()().touched() && !messageCountField()().valid()
+                ) {
                 <mat-error>
                     @for (error of messageCountField()().errors(); track error) {
                     {{ error.message }}

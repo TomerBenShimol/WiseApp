@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import {
   debounce,
+  FieldTree,
   form,
   max,
   min,
@@ -63,7 +64,7 @@ export class LandingPageComponent {
   });
 
   dayFields = computed(() => {
-    const fields: Record<string, any> = {};
+    const fields: Record<string, FieldTree<boolean, string>> = {};
     this.WEEKDAYS.forEach((day) => {
       fields[day] = this.configurationForm[day];
     });

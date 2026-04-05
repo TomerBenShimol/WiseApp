@@ -4,7 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTimepickerModule } from '@angular/material/timepicker';
-import { FormField } from '@angular/forms/signals';
+import { FieldTree, FormField } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-delivery-schedule',
@@ -22,8 +22,8 @@ import { FormField } from '@angular/forms/signals';
 })
 export class DeliveryScheduleComponent {
   weekdays = input.required<readonly string[]>();
-  dayFields = input.required<Record<string, any>>();
-  deliveryTimeField = input.required<any>();
+  dayFields = input.required<Record<string, FieldTree<boolean, string>>>();
+  deliveryTimeField = input.required<FieldTree<string, string>>();
   formTouched = input.required<boolean>();
   atLeastOneDaySelected = input.required<boolean>();
 }

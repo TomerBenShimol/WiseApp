@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormField } from '@angular/forms/signals';
+import { FieldTree, FormField } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-learning-profile',
@@ -19,8 +19,8 @@ import { FormField } from '@angular/forms/signals';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LearningProfileComponent {
-  phoneNumberField = input.required<any>();
-  topicField = input.required<any>();
-  messageCountField = input.required<any>();
+  phoneNumberField = input.required<FieldTree<string, string>>();
+  topicField = input.required<FieldTree<string, string>>();
+  messageCountField = input.required<FieldTree<number, string>>();
   messageCountOptions = input.required<number[]>();
 }
